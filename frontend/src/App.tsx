@@ -28,7 +28,7 @@ interface SuggestResponse {
 }
 
 function FilterTag({ filter }: { filter: Filter }) {
-  const value = filter.string_values?.join(', ') || filter.number_value || filter.time_value
+  const value = filter.string_values?.join(', ') ?? filter.number_value ?? filter.time_value
   return (
     <span style={{
       display: 'inline-block',
@@ -120,11 +120,14 @@ export default function App() {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ query }),
       })
-      if (!res.ok) throw new Error('API error')
+      if (!res.ok) {
+        const err = await res.json().catch(() => ({}))
+        throw new Error(err.error || 'API error')
+      }
       const data = await res.json()
       setResult(data)
     } catch (e) {
-      setError('Failed to connect to backend. Make sure it is running on port 8080.')
+      setError(e instanceof Error ? e.message : 'Failed to connect to backend. Make sure it is running on port 8080.')
     } finally {
       setLoading(false)
     }
@@ -238,7 +241,7 @@ export default function App() {
             <div style={{ fontSize: 12, color: '#999', marginBottom: 8, textTransform: 'uppercase', fontWeight: 600 }}>
               Segment Filters
             </div>
-            <TreeView node={result.tree} />
+            {result.tree ? <TreeView node={result.tree} /> : <p style={{ color: '#999', fontSize: 14 }}>No segment filters could be built for this query.</p>}
           </div>
 
           <div style={{ marginTop: 16 }}>

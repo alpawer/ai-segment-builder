@@ -99,7 +99,9 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		},
 	})
 	if err != nil {
-		http.Error(w, fmt.Sprintf("AI error: %v", err), http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": fmt.Sprintf("AI error: %v", err)})
 		return
 	}
 
@@ -115,14 +117,18 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 	start := strings.Index(text, "{")
 	end := strings.LastIndex(text, "}")
 	if start == -1 || end == -1 {
-		http.Error(w, "invalid AI response", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid AI response"})
 		return
 	}
 	jsonStr := text[start : end+1]
 
 	var result SuggestResponse
 	if err := json.Unmarshal([]byte(jsonStr), &result); err != nil {
-		http.Error(w, "failed to parse AI response", http.StatusInternalServerError)
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "failed to parse AI response"})
 		return
 	}
 
