@@ -4,6 +4,12 @@ A demo project that converts natural language queries into contact segment filte
 
 Describe your audience in any language and AI will automatically build the filter tree for you.
 
+## Demo
+
+![Input](demo1.png)
+![Loading](demo2.png)
+![Result](demo3.png)
+
 ## How it works
 
 1. User types a natural language query (in any language)
@@ -26,22 +32,26 @@ Describe your audience in any language and AI will automatically build the filte
 ## Setup
 
 1. Clone the repo
-
-    git clone https://github.com/alpawer/ai-segment-builder.git
-    cd ai-segment-builder
+```bash
+git clone https://github.com/alpawer/ai-segment-builder.git
+cd ai-segment-builder
+```
 
 2. Set your API key
-
-    cp backend/.env.example backend/.env
-    # Edit backend/.env and add your ANTHROPIC_API_KEY
+```bash
+cp backend/.env.example backend/.env
+# Edit backend/.env and add your ANTHROPIC_API_KEY
+```
 
 3. Install frontend dependencies
-
-    cd frontend && npm install && cd ..
+```bash
+cd frontend && npm install && cd ..
+```
 
 4. Run
-
-    ./start.sh
+```bash
+./start.sh
+```
 
 Open http://localhost:3000
 
@@ -54,12 +64,16 @@ Open http://localhost:3000
 
 ## Project Structure
 
-    ai-segment-builder/
-    ├── backend/
-    │   ├── main.go
-    │   ├── go.mod
-    │   └── .env.example
-    ├── frontend/
-    │   ├── src/App.tsx
-    │   └── package.json
-    └── start.sh
+ai-segment-builder/
+├── backend/
+│ ├── main.go
+│ ├── go.mod
+│ └── .env.example
+├── frontend/
+│ ├── src/App.tsx
+│ └── package.json
+├── demo1.png
+├── demo2.png
+├── demo3.png
+└── start.sh
+

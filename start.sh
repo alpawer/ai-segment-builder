@@ -10,14 +10,16 @@ if [ -z "$ANTHROPIC_API_KEY" ]; then
   fi
 fi
 
+ROOT_DIR=$(pwd)
+
 echo "Starting backend on port 8080..."
-cd backend && go run main.go &
+cd "$ROOT_DIR/backend" && go run main.go &
 BACKEND_PID=$!
 
 sleep 2
 
 echo "Starting frontend on port 3000..."
-cd ../frontend && npm start &
+cd "$ROOT_DIR/frontend" && npm start &
 FRONTEND_PID=$!
 
 trap "kill $BACKEND_PID $FRONTEND_PID" EXIT
