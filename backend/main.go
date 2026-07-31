@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/anthropics/anthropic-sdk-go"
 )
@@ -86,7 +87,9 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 
 	client := anthropic.NewClient()
-	msg, err := client.Messages.New(context.Background(), anthropic.MessageNewParams{
+	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
+	defer cancel()
+	msg, err := client.Messages.New(ctx, anthropic.MessageNewParams{
 		Model:     anthropic.ModelClaudeOpus4_6,
 		MaxTokens: 2048,
 		Messages: []anthropic.MessageParam{
@@ -113,10 +116,28 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Extract JSON
+	// Extract JSON using proper brace matching
 	start := strings.Index(text, "{")
-	end := strings.LastIndex(text, "}")
-	if start == -1 || end == -1 {
+	if start == -1 {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid AI response"})
+		return
+	}
+	depth := 0
+	end := -1
+	for i := start; i < len(text); i++ {
+		if text[i] == '{' {
+			depth++
+		} else if text[i] == '}' {
+			depth--
+			if depth == 0 {
+				end = i
+				break
+			}
+		}
+	}
+	if end == -1 {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusInternalServerError)
 		json.NewEncoder(w).Encode(map[string]string{"error": "invalid AI response"})
