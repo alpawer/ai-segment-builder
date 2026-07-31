@@ -2,7 +2,7 @@
 
 A demo project that converts natural language queries into contact segment filters using Claude AI.
 
-Describe your audience in any language and AI will automatically build the filter tree for you.
+Describe your audience in any language — AI will build the filter tree automatically.
 
 ## Demo
 
@@ -23,35 +23,16 @@ Describe your audience in any language and AI will automatically build the filte
 - **Frontend**: React + TypeScript
 - **AI**: Claude claude-sonnet-4-6 via Anthropic API
 
-## Prerequisites
+## Getting started
 
-- Go 1.21+
-- Node.js 18+
-- Anthropic API key — get one at https://console.anthropic.com
+You'll need Go 1.21+, Node.js 18+, and an Anthropic API key from [console.anthropic.com](https://console.anthropic.com).
 
-## Setup
-
-1. Clone the repo
-```bash
-git clone https://github.com/alpawer/ai-segment-builder.git
-cd ai-segment-builder
-```
-
-2. Set your API key
-```bash
-cp backend/.env.example backend/.env
-# Edit backend/.env and add your ANTHROPIC_API_KEY
-```
-
-3. Install frontend dependencies
-```bash
-cd frontend && npm install && cd ..
-```
-
-4. Run
-```bash
-./start.sh
-```
+    git clone https://github.com/alpawer/ai-segment-builder.git
+    cd ai-segment-builder
+    cp backend/.env.example backend/.env
+    # Add your ANTHROPIC_API_KEY to backend/.env
+    cd frontend && npm install && cd ..
+    ./start.sh
 
 Open http://localhost:3000
 
@@ -60,20 +41,10 @@ Open http://localhost:3000
 - contacts from USA created in the last 7 days
 - customers with more than 5 orders and lifetime value over 100
 - нові контакти з України за останній місяць
-- клиенты с заказами больше 3
 
 ## Project Structure
 
-ai-segment-builder/
-├── backend/
-│ ├── main.go
-│ ├── go.mod
-│ └── .env.example
-├── frontend/
-│ ├── src/App.tsx
-│ └── package.json
-├── demo1.png
-├── demo2.png
-├── demo3.png
-└── start.sh
-
+    ai-segment-builder/
+    ├── backend/        # Go server, Anthropic SDK, /api/suggest endpoint
+    ├── frontend/       # React + TypeScript UI
+    └── start.sh        # runs both with one command
