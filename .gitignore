@@ -1,0 +1,4 @@
+backend/.env
+backend/ai-segment-builder
+frontend/node_modules
+frontend/build
