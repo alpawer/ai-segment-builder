@@ -28,6 +28,7 @@ interface SuggestResponse {
 }
 
 function FilterTag({ filter }: { filter: Filter }) {
+  const hasValue = filter.string_values?.length || filter.number_value !== undefined || filter.time_value !== undefined
   const value = filter.string_values?.join(', ') ?? filter.number_value ?? filter.time_value
   return (
     <span style={{
@@ -40,7 +41,7 @@ function FilterTag({ filter }: { filter: Filter }) {
       fontSize: 13,
       color: '#1565c0'
     }}>
-      <b>{filter.field_name}</b> {filter.operator} <b>{String(value)}</b>
+      <b>{filter.field_name}</b> {filter.operator}{hasValue ? <> <b>{String(value)}</b></> : null}
     </span>
   )
 }

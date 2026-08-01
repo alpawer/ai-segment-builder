@@ -92,11 +92,18 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	r.Body = http.MaxBytesReader(w, r.Body, 1<<20) // 1MB limit
 	var req SuggestRequest
 	if err := json.NewDecoder(r.Body).Decode(&req); err != nil {
 		w.Header().Set("Content-Type", "application/json")
 		w.WriteHeader(http.StatusBadRequest)
 		json.NewEncoder(w).Encode(map[string]string{"error": "invalid request"})
+		return
+	}
+	if strings.TrimSpace(req.Query) == "" {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusBadRequest)
+		json.NewEncoder(w).Encode(map[string]string{"error": "query is required"})
 		return
 	}
 
@@ -130,7 +137,7 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	// Extract JSON using proper brace matching
+	// Extract JSON using string-aware brace matching
 	start := strings.Index(text, "{")
 	if start == -1 {
 		w.Header().Set("Content-Type", "application/json")
@@ -140,10 +147,28 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 	}
 	depth := 0
 	end := -1
+	inString := false
+	escaped := false
 	for i := start; i < len(text); i++ {
-		if text[i] == '{' {
+		ch := text[i]
+		if escaped {
+			escaped = false
+			continue
+		}
+		if ch == '\\' && inString {
+			escaped = true
+			continue
+		}
+		if ch == '"' {
+			inString = !inString
+			continue
+		}
+		if inString {
+			continue
+		}
+		if ch == '{' {
 			depth++
-		} else if text[i] == '}' {
+		} else if ch == '}' {
 			depth--
 			if depth == 0 {
 				end = i
@@ -167,6 +192,12 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
+	if result.Name == "" || result.Explanation == "" || result.Tree == nil {
+		w.Header().Set("Content-Type", "application/json")
+		w.WriteHeader(http.StatusInternalServerError)
+		json.NewEncoder(w).Encode(map[string]string{"error": "invalid AI response"})
+		return
+	}
 	w.Header().Set("Content-Type", "application/json")
 	json.NewEncoder(w).Encode(result)
 }

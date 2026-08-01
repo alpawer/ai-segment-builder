@@ -2,7 +2,7 @@
 
 if [ -z "$ANTHROPIC_API_KEY" ]; then
   if [ -f backend/.env ]; then
-    export $(cat backend/.env | xargs)
+    set -a; source backend/.env; set +a
   else
     echo "Error: ANTHROPIC_API_KEY is not set"
     echo "Create backend/.env file with: ANTHROPIC_API_KEY=your-key"
