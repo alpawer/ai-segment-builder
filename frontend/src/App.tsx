@@ -47,13 +47,15 @@ function FilterTag({ filter }: { filter: Filter }) {
 
 function TreeView({ node, depth = 0 }: { node: TreeNode; depth?: number }) {
   if (node.kind === 'leaf' && node.leaf) {
+    const filters = node.leaf.contact?.filters ?? []
     return (
       <div style={{ marginLeft: depth * 20, marginBottom: 8 }}>
-        {node.leaf.contact.filters.map((f, i) => <FilterTag key={i} filter={f} />)}
+        {filters.map((f, i) => <FilterTag key={i} filter={f} />)}
       </div>
     )
   }
   if (node.kind === 'branch' && node.branch) {
+    const leaves = node.branch.leaves ?? []
     return (
       <div style={{ marginLeft: depth * 20 }}>
         <div style={{
@@ -70,7 +72,7 @@ function TreeView({ node, depth = 0 }: { node: TreeNode; depth?: number }) {
         }}>
           {node.branch.operator}
         </div>
-        {node.branch.leaves.map((leaf, i) => <TreeView key={i} node={leaf} depth={depth + 1} />)}
+        {leaves.map((leaf, i) => <TreeView key={i} node={leaf} depth={depth + 1} />)}
       </div>
     )
   }

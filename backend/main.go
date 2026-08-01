@@ -99,7 +99,7 @@ func suggestHandler(w http.ResponseWriter, r *http.Request) {
 	ctx, cancel := context.WithTimeout(r.Context(), 30*time.Second)
 	defer cancel()
 	msg, err := client.Messages.New(ctx, anthropic.MessageNewParams{
-		Model:     anthropic.ModelClaudeOpus4_6,
+		Model:     anthropic.ModelClaudeSonnet4_6,
 		MaxTokens: 2048,
 		Messages: []anthropic.MessageParam{
 			{
