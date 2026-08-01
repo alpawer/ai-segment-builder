@@ -8,6 +8,7 @@ interface Filter {
   string_values?: string[]
   number_value?: number
   time_value?: number
+  date_value?: string
 }
 
 interface Leaf {
@@ -28,8 +29,8 @@ interface SuggestResponse {
 }
 
 function FilterTag({ filter }: { filter: Filter }) {
-  const hasValue = filter.string_values?.length || filter.number_value !== undefined || filter.time_value !== undefined
-  const value = filter.string_values?.join(', ') ?? filter.number_value ?? filter.time_value
+  const hasValue = filter.string_values?.length || filter.number_value !== undefined || filter.time_value !== undefined || filter.date_value !== undefined
+  const value = filter.string_values?.join(', ') ?? filter.number_value ?? filter.time_value ?? filter.date_value
   return (
     <span style={{
       display: 'inline-block',
