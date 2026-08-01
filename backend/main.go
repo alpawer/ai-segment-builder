@@ -41,6 +41,12 @@ String operators: equals, not_equals, contains, not_contains, starts_with, ends_
 Number operators: equals, not_equals, gt, gte, lt, lte
 Time operators: after_date, before_date, in_the_last_days
 
+Field value rules:
+- string fields: use "string_values": ["value"]
+- number fields: use "number_value": 42
+- time fields with after_date/before_date: use "date_value": "2024-01-01"
+- time fields with in_the_last_days: use "time_value": 7
+
 Return ONLY valid JSON:
 {
   "name": "Segment name",
